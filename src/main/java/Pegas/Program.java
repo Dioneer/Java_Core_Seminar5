@@ -16,6 +16,11 @@ public class Program{
         writeFileContents("sample2.txt", 35, 2);
         concat("sample1.txt", "sample2.txt", "concat.txt");
         System.out.println(searchInFile("sample2.txt",TO_SEARCH));
+
+        int i = 0;
+        while ((i=searchInFile("concat.txt", i, TO_SEARCH))>0){
+            System.out.printf("File include search word and offcet: %d\n", i);
+        }
     }
     private static String generateSymbols(int amount){
         StringBuilder stringBuilder = new StringBuilder();
@@ -59,8 +64,12 @@ public class Program{
             }
         }
     }
-    private static boolean searchInFile(String FileName, String search) throws IOException{
-        try(BufferedInputStream bis2 = new BufferedInputStream(new FileInputStream(FileName))){
+    private static int searchInFile(String fileName, String search) throws IOException{
+        return searchInFile(fileName, 0, search);
+    }
+    private static int searchInFile(String fileName, int offset, String search) throws IOException{
+        try(BufferedInputStream bis2 = new BufferedInputStream(new FileInputStream(fileName))){
+            bis2.skipNBytes(offset);
             byte[] arr = search.getBytes();
             int r;
             int i = 0;
@@ -71,14 +80,14 @@ public class Program{
                     i=0;
                     if(r==arr[i]) {
                         i++;
-                        continue;
                     }
                 }
                 if(i==arr.length){
-                    return true;
+                    return offset;
                 }
+                offset++;
             }
         }
-        return false;
+        return -1;
     }
 }

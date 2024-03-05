@@ -2,6 +2,8 @@ package Pegas;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Program{
@@ -20,6 +22,16 @@ public class Program{
         int i = 0;
         while ((i=searchInFile("concat.txt", i, TO_SEARCH))>0){
             System.out.printf("File include search word and offcet: %d\n", i);
+        }
+        String[] fileNames = new String[10];
+        for (int j = 0; j < fileNames.length; j++) {
+            fileNames[j] = "file"+ j+".txt";
+            writeFileContents(fileNames[j], 30, 3);
+            System.out.printf("File %s create", fileNames[j]);
+        }
+        List<String> rez= searchMatch(new File("."), TO_SEARCH);
+        for(String s: rez){
+            System.out.printf("File %s has your word %s.\t\n", s, TO_SEARCH);
         }
     }
     private static String generateSymbols(int amount){
@@ -48,18 +60,16 @@ public class Program{
         try(BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileOut))){
             try(BufferedInputStream bis1 = new BufferedInputStream(new FileInputStream(file1))){
                 byte[] arr = new byte[1024];
-                int r = bis1.read(arr);
-                while(r!=-1){
+                int r;
+                while((r=bis1.read(arr))>0){
                     bos.write(arr, 0 , r);
-                    r = bis1.read(arr);
                 }
             }
             try(BufferedInputStream bis2 = new BufferedInputStream(new FileInputStream(file2))){
                 byte[] arr = new byte[1024];
-                int r = bis2.read(arr);
-                while (r!=-1) {
+                int r;
+                while ((r=bis2.read(arr))>0){
                     bos.write(arr, 0 , r);
-                    r = bis2.read(arr);
                 }
             }
         }
@@ -89,5 +99,18 @@ public class Program{
             }
         }
         return -1;
+    }
+    static List<String> searchMatch(File file, String search) throws IOException {
+        List<String> list = new ArrayList<>();
+        File[] files = file.listFiles();
+        if(files==null)return list;
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].isFile()){
+                if(searchInFile(files[i].getCanonicalPath(), search)>-1){
+                    list.add(files[i].getCanonicalPath());
+                }
+            }
+        }
+        return list;
     }
 }

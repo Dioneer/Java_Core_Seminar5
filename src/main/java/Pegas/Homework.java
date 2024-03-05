@@ -9,12 +9,13 @@ import java.util.Map;
 public class Homework {
     private final static Map<String, String> pathsAndNames = new HashMap<>();
     private final static String STR = "/backup";
+    private final static String SRC = "/src";
     //путь к корню
     private final static Path PATH = FileSystems.getDefault().getPath(".");
 
     public static void main(String[] args) throws IOException {
         //коллекция путей всех файлов
-        collectAllPaths(new File(PATH +"/src"), pathsAndNames);
+        collectAllPaths(new File(PATH +SRC), pathsAndNames);
         //путь для бэкапа
         String backUpPath = mkDir(PATH+STR);
         //создание бэкапа
